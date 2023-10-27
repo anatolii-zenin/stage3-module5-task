@@ -4,6 +4,10 @@ import com.mjc.school.controller.TagController;
 import com.mjc.school.service.TagService;
 import com.mjc.school.service.dto.tag.TagDTOReq;
 import com.mjc.school.service.dto.tag.TagDTOResp;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,15 +17,24 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/api")
+@Api(produces = "application/json", tags = "Tags", description = "CRUD operations for tags")
 public class CTagController implements TagController {
     @Autowired
     TagService service;
 
     @Override
-    @GetMapping(value = "tags")
+    @GetMapping(value = "/tags")
     @ResponseStatus(HttpStatus.OK)
-    public List<TagDTOResp> readAll(
+    @ApiOperation(value = "List all tags. Accepts parameters 'page' for page number and " +
+            "'size' for the amount of entries returned per page.",
+            response = List.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully retrieved requested data"),
+            @ApiResponse(code = 400, message = "Received a malformed request"),
+            @ApiResponse(code = 500, message = "Unexpected internal error")
+    })
+    public List<com.mjc.school.service.dto.tag.TagDTOResp> readAll(
             @RequestParam(name = "page", required = false, defaultValue = "1") int page,
             @RequestParam(name = "size", required = false, defaultValue = "1") int size
     ) {
@@ -29,37 +42,70 @@ public class CTagController implements TagController {
     }
 
     @Override
-    @GetMapping(value = "tags/{id:\\d+}")
+    @GetMapping(value = "/tags/{id:\\d+}")
     @ResponseStatus(HttpStatus.OK)
-    public TagDTOResp readById(@PathVariable Long id) {
+    @ApiOperation(value = "Retrieve tag by ID", response = TagDTOResp.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully retrieved requested data"),
+            @ApiResponse(code = 400, message = "Received a malformed request"),
+            @ApiResponse(code = 404, message = "Tag with given ID was not found"),
+            @ApiResponse(code = 500, message = "Unexpected internal error")
+    })
+    public com.mjc.school.service.dto.tag.TagDTOResp readById(@PathVariable Long id) {
         return service.readById(id);
     }
 
     @Override
-    @PostMapping(value = "tags/create", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/tags/create", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public TagDTOResp create(@RequestBody TagDTOReq createRequest) {
+    @ApiOperation(value = "Create tag", response = TagDTOResp.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Successfully created news"),
+            @ApiResponse(code = 400, message = "Received a malformed request"),
+            @ApiResponse(code = 500, message = "Unexpected internal error")
+    })
+    public com.mjc.school.service.dto.tag.TagDTOResp create(@RequestBody TagDTOReq createRequest) {
         return service.create(createRequest);
     }
 
     @Override
-    @PatchMapping(value = "tags/{id:\\d+}/update", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(value = "/tags/{id:\\d+}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public TagDTOResp update(@PathVariable Long id, @RequestBody TagDTOReq updateRequest) {
+    @ApiOperation(value = "Update a tag with given ID", response = TagDTOResp.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully updated the comment"),
+            @ApiResponse(code = 400, message = "Received a malformed request"),
+            @ApiResponse(code = 404, message = "Tag with given ID was not found"),
+            @ApiResponse(code = 500, message = "Unexpected internal error")
+    })
+    public com.mjc.school.service.dto.tag.TagDTOResp update(@PathVariable Long id, @RequestBody TagDTOReq updateRequest) {
         updateRequest.setId(id);
         return service.update(updateRequest);
     }
 
     @Override
-    @DeleteMapping(value = "tags/{id:\\d+}/delete")
+    @DeleteMapping(value = "/tags/{id:\\d+}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ApiOperation(value = "Delete a tag with given ID")
+    @ApiResponses(value = {
+            @ApiResponse(code = 204, message = "Successfully deleted the comment"),
+            @ApiResponse(code = 404, message = "Tag with given ID was not found"),
+            @ApiResponse(code = 500, message = "Unexpected internal error")
+    })
     public void deleteById(@PathVariable Long id) {
         service.deleteById(id);
     }
 
     @Override
-    @GetMapping(value = "news/{id:\\d+}/tags")
+    @GetMapping(value = "/news/{id:\\d+}/tags")
     @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "Read a tag by news ID ID", response = TagDTOResp.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully retrieved requested data"),
+            @ApiResponse(code = 400, message = "Received a malformed request"),
+            @ApiResponse(code = 404, message = "News with given ID was not found"),
+            @ApiResponse(code = 500, message = "Unexpected internal error")
+    })
     public List<TagDTOResp> readByNewsId(@PathVariable Long id) {
         return service.readByNewsId(id);
     }
