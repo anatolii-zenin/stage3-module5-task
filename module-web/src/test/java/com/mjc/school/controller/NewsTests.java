@@ -75,7 +75,7 @@ public class NewsTests {
         reqBody.put("title", newsTitleUpdated);
 
         given().contentType("application/json").body(reqBody.toString())
-                .when().patch(NEWS + newsId + "/update")
+                .when().patch(NEWS + newsId)
                 .then()
                 .statusCode(200)
                 .body("title", equalTo(newsTitleUpdated));
@@ -90,7 +90,7 @@ public class NewsTests {
                 new ArrayList<>());
 
         given()
-                .when().delete(NEWS + newsId + "/delete")
+                .when().delete(NEWS + newsId)
                 .then()
                 .statusCode(204);
     }

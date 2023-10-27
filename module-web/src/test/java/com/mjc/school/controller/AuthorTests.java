@@ -54,7 +54,7 @@ public class AuthorTests {
         reqBody.put("id", id);
 
         given().contentType("application/json").body(reqBody.toString())
-                .when().patch(AUTHORS + id + "/update")
+                .when().patch(AUTHORS + id)
                 .then()
                 .statusCode(200)
                 .body("name", equalTo(authorNameUpdated));
@@ -70,7 +70,7 @@ public class AuthorTests {
         reqBodyInvalid.put("id", id);
 
         given().contentType("application/json").body(reqBodyInvalid.toString())
-                .when().patch(AUTHORS + id + "/update")
+                .when().patch(AUTHORS + id)
                 .then()
                 .statusCode(400);
     }
@@ -79,7 +79,7 @@ public class AuthorTests {
     public void deleteAuthorTest() {
         var id = createAuthor(DEFAULT_AUTHOR_NAME);
         given()
-                .when().delete(AUTHORS + id +"/delete")
+                .when().delete(AUTHORS + id)
                 .then()
                 .statusCode(204);
     }

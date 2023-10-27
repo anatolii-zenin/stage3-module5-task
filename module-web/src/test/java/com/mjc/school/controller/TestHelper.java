@@ -8,7 +8,7 @@ import java.util.List;
 import static io.restassured.RestAssured.given;
 
 public class TestHelper {
-    public static final String BASE = "http://localhost:8080/";
+    public static final String BASE = "http://localhost:8080/api/";
     public static final String NEWS = BASE + "news/";
     public static final String COMMENTS = BASE + "comments/";
     public static final String TAGS = BASE + "tags/";

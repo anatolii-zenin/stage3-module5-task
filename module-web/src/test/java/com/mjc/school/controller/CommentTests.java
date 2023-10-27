@@ -95,7 +95,7 @@ public class CommentTests {
         reqBody.put("content", contentUpdated);
 
         given().contentType("application/json").body(reqBody.toString())
-                .when().patch(COMMENTS + commentId + "/update")
+                .when().patch(COMMENTS + commentId)
                 .then()
                 .statusCode(200)
                 .body("content", equalTo(contentUpdated));
@@ -111,7 +111,7 @@ public class CommentTests {
         var commentId = createComment(newsId, DEFAULT_COMMENT);
 
         given()
-                .when().delete(COMMENTS + commentId + "/delete")
+                .when().delete(COMMENTS + commentId)
                 .then()
                 .statusCode(204);
     }

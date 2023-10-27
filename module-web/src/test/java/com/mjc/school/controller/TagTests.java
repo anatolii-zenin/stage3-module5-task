@@ -76,7 +76,7 @@ public class TagTests {
         reqBody.put("id", id);
 
         given().contentType("application/json").body(reqBody.toString())
-                .when().patch(TAGS + id + "/update")
+                .when().patch(TAGS + id)
                 .then()
                 .statusCode(200)
                 .body("name", equalTo(tagNameUpdated));
@@ -86,7 +86,7 @@ public class TagTests {
         reqBodyInvalid.put("id", id);
 
         given().contentType("application/json").body(reqBodyInvalid.toString())
-                .when().patch(TAGS + id + "/update")
+                .when().patch(TAGS + id)
                 .then()
                 .statusCode(400);
     }
@@ -96,7 +96,7 @@ public class TagTests {
         var id = createTag(DEFAULT_TAG_NAME);
 
         given()
-                .when().delete(TAGS + id + "/delete")
+                .when().delete(TAGS + id)
                 .then()
                 .statusCode(204);
     }
