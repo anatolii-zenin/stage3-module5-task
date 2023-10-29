@@ -2,7 +2,9 @@ package com.mjc.school.service.implementation;
 
 import com.mjc.school.repository.TagRepository;
 import com.mjc.school.repository.model.implementation.TagEntity;
+import com.mjc.school.repository.page.Page;
 import com.mjc.school.service.TagService;
+import com.mjc.school.service.dto.page.PageDTOResp;
 import com.mjc.school.service.dto.tag.TagDTOReq;
 import com.mjc.school.service.dto.tag.TagDTOResp;
 import com.mjc.school.service.mapper.TagDTOMapper;
@@ -15,7 +17,6 @@ import java.util.List;
 
 @Service
 @Scope("singleton")
-@Transactional
 public class TagServiceImpl
         extends BaseServiceImpl<TagDTOReq, TagDTOResp, TagEntity, TagRepository>
         implements TagService {
@@ -39,6 +40,11 @@ public class TagServiceImpl
     }
 
     @Override
+    protected PageDTOResp<TagDTOResp> pageToDto(Page<TagEntity> page) {
+        return mapper.authorsPageToDto(page);
+    }
+
+    @Override
     protected TagRepository getRepo() {
         return tagRepository;
     }
@@ -49,6 +55,7 @@ public class TagServiceImpl
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<TagDTOResp> readByNewsId(Long id) {
         return entitiesToDtos(tagRepository.readByNewsId(id));
     }

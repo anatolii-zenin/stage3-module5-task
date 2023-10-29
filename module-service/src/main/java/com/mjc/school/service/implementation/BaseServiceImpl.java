@@ -2,8 +2,11 @@ package com.mjc.school.service.implementation;
 
 import com.mjc.school.repository.PaginationCapableRepository;
 import com.mjc.school.repository.model.BaseEntity;
+import com.mjc.school.repository.page.Page;
+import com.mjc.school.repository.page.PageParams;
 import com.mjc.school.service.PaginationCapableService;
 import com.mjc.school.service.dto.Request;
+import com.mjc.school.service.dto.page.PageDTOResp;
 import com.mjc.school.service.exception.NotFoundException;
 import com.mjc.school.service.validator.annotations.Validate;
 import com.mjc.school.service.validator.annotations.ValidateUpdate;
@@ -11,22 +14,27 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Transactional
 public abstract class BaseServiceImpl<Req extends Request<Long>, Resp, Entity extends BaseEntity<Long>,
         Repository extends PaginationCapableRepository<Entity, Long>>
         implements PaginationCapableService<Req, Resp, Long> {
 
     @Override
-    public List<Resp> readAll() {
-        return entitiesToDtos(getRepo().readAll());
+    @Transactional(readOnly = true)
+    public PageDTOResp<Resp> readAll(int page, int size, String sortBy, String order) {
+        var pageParams = new PageParams();
+        pageParams.setPageNum(page);
+        pageParams.setPageSize(size);
+        pageParams.setSortedBy("id");
+        pageParams.setAscending(true);
+        if (sortBy!= null && !sortBy.isBlank())
+            pageParams.setSortedBy(sortBy);
+        if (sortBy!= null && !order.isBlank())
+            pageParams.setAscending(order.equals("asc"));
+        return pageToDto(getRepo().readAll(pageParams));
     }
 
     @Override
-    public List<Resp> readAll(int page, int size) {
-        return entitiesToDtos(getRepo().readAll(page, size));
-    }
-
-    @Override
+    @Transactional(readOnly = true)
     public Resp readById(Long id) {
         var item = getRepo().readById(id);
         if(item.isEmpty())
@@ -35,6 +43,7 @@ public abstract class BaseServiceImpl<Req extends Request<Long>, Resp, Entity ex
     }
 
     @Override
+    @Transactional
     public Resp create(@Validate Req createRequest) {
         return entityToDto(
                 getRepo().create(dtoToEntity(createRequest))
@@ -42,6 +51,7 @@ public abstract class BaseServiceImpl<Req extends Request<Long>, Resp, Entity ex
     }
 
     @Override
+    @Transactional
     public Resp update(@ValidateUpdate Req updateRequest) {
         var id = updateRequest.getId();
         var entityToUpdate = getRepo().readById(id);
@@ -56,6 +66,7 @@ public abstract class BaseServiceImpl<Req extends Request<Long>, Resp, Entity ex
     }
 
     @Override
+    @Transactional
     public boolean deleteById(Long id) {
         return getRepo().deleteById(id);
     }
@@ -65,6 +76,7 @@ public abstract class BaseServiceImpl<Req extends Request<Long>, Resp, Entity ex
     protected abstract List<Resp> entitiesToDtos(List<Entity> entities);
 
     protected abstract Resp entityToDto(Entity entity);
+    protected abstract PageDTOResp<Resp> pageToDto(Page<Entity> page);
     
     protected abstract Repository getRepo();
 

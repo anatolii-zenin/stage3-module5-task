@@ -2,6 +2,8 @@ package com.mjc.school.repository.implementation;
 
 import com.mjc.school.repository.PaginationCapableRepository;
 import com.mjc.school.repository.model.BaseEntity;
+import com.mjc.school.repository.page.Page;
+import com.mjc.school.repository.page.PageParams;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
@@ -19,12 +21,30 @@ public abstract class AbstractBaseRepositoryImpl<T extends BaseEntity<Long>> imp
     }
 
     @Override
-    public List<T> readAll(int page, int size) {
-        var getPageOfEntries = getEntityManager().createQuery(
-            "SELECT a FROM " + getTableName() + " a ", getEntityClass());
-        getPageOfEntries.setMaxResults(size);
-        getPageOfEntries.setFirstResult((page - 1)*size);
-        return getPageOfEntries.getResultList();
+    public Page<T> readAll(PageParams pageParams) {
+        var page = new Page<T>();
+        page.setCurrentPage(pageParams.getPageNum());
+        page.setSortedBy(pageParams.getSortedBy());
+        page.setAscending(pageParams.isAscending());
+
+        var query = getEntityManager().createQuery(
+            "SELECT a FROM " + getTableName() + " a " +
+                    "ORDER BY a." + pageParams.getSortedBy() +
+                    " " + (pageParams.isAscending()? "ASC" : "DESC"),
+                getEntityClass());
+
+        var totalPages = (int) Math.ceil((double) query.getResultList().size() / pageParams.getPageSize());
+        page.setTotalPages(totalPages);
+
+        query.setMaxResults(pageParams.getPageSize());
+        query.setFirstResult((pageParams.getPageNum() - 1) * pageParams.getPageSize());
+        page.setData(query.getResultList());
+
+        page.setLastPage(
+                totalPages == pageParams.getPageNum()
+        );
+
+        return page;
     }
 
     @Override

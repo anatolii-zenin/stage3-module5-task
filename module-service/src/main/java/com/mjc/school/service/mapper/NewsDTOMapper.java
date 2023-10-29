@@ -1,8 +1,10 @@
 package com.mjc.school.service.mapper;
 
 import com.mjc.school.repository.model.implementation.NewsEntity;
+import com.mjc.school.repository.page.Page;
 import com.mjc.school.service.dto.news.NewsDTOReq;
 import com.mjc.school.service.dto.news.NewsDTOResp;
+import com.mjc.school.service.dto.page.PageDTOResp;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -32,4 +34,6 @@ public abstract class NewsDTOMapper {
     public abstract NewsEntity newsReqToEntity(NewsDTOReq req);
 
     public abstract List<NewsDTOResp> newsEntitiesToDto(List<NewsEntity> newsEntities);
+
+    public abstract PageDTOResp<NewsDTOResp> authorsPageToDto(Page<NewsEntity> page);
 }

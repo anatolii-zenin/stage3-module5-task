@@ -2,9 +2,11 @@ package com.mjc.school.service.implementation;
 
 import com.mjc.school.repository.CommentRepository;
 import com.mjc.school.repository.model.implementation.CommentEntity;
+import com.mjc.school.repository.page.Page;
 import com.mjc.school.service.CommentService;
 import com.mjc.school.service.dto.comment.CommentDTOReq;
 import com.mjc.school.service.dto.comment.CommentDTOResp;
+import com.mjc.school.service.dto.page.PageDTOResp;
 import com.mjc.school.service.mapper.CommentDTOMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -14,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-@Transactional
 @Scope("singleton")
 public class CommentServiceImpl
         extends BaseServiceImpl<CommentDTOReq, CommentDTOResp, CommentEntity, CommentRepository>
@@ -39,6 +40,11 @@ public class CommentServiceImpl
     }
 
     @Override
+    protected PageDTOResp<CommentDTOResp> pageToDto(Page<CommentEntity> page) {
+        return mapper.authorsPageToDto(page);
+    }
+
+    @Override
     protected CommentRepository getRepo() {
         return commentRepository;
     }
@@ -49,6 +55,7 @@ public class CommentServiceImpl
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<CommentDTOResp> readCommentsByNewsId(Long newsId) {
         return entitiesToDtos(commentRepository.readByNewsId(newsId));
     }

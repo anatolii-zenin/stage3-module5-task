@@ -4,6 +4,7 @@ import com.mjc.school.controller.CommentController;
 import com.mjc.school.service.CommentService;
 import com.mjc.school.service.dto.comment.CommentDTOReq;
 import com.mjc.school.service.dto.comment.CommentDTOResp;
+import com.mjc.school.service.dto.page.PageDTOResp;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -26,17 +27,18 @@ public class CCommentController implements CommentController {
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "List all comments. Accepts parameters 'page' for page number and " +
             "'size' for the amount of entries returned per page.",
-            response = List.class)
+            response = PageDTOResp.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully retrieved requested data"),
             @ApiResponse(code = 400, message = "Received a malformed request"),
             @ApiResponse(code = 500, message = "Unexpected internal error")
     })
-    public List<com.mjc.school.service.dto.comment.CommentDTOResp> readAll(
+    public PageDTOResp<CommentDTOResp> readAll(
             @RequestParam(name = "page", required = false, defaultValue = "1") int page,
-            @RequestParam(name = "size", required = false, defaultValue = "10") int size
-    ) {
-        return service.readAll(page, size);
+            @RequestParam(name = "size", required = false, defaultValue = "10") int size,
+            @RequestParam(name = "sortBy", required = false, defaultValue = "id") String sortBy,
+            @RequestParam(name = "order", required = false, defaultValue = "asc") String order) {
+        return service.readAll(page, size, sortBy, order);
     }
 
     @Override
@@ -49,7 +51,7 @@ public class CCommentController implements CommentController {
             @ApiResponse(code = 404, message = "Comment with given ID was not found"),
             @ApiResponse(code = 500, message = "Unexpected internal error")
     })
-    public com.mjc.school.service.dto.comment.CommentDTOResp readById(@PathVariable Long id) {
+    public CommentDTOResp readById(@PathVariable Long id) {
         return service.readById(id);
     }
 
@@ -62,7 +64,7 @@ public class CCommentController implements CommentController {
             @ApiResponse(code = 400, message = "Received a malformed request"),
             @ApiResponse(code = 500, message = "Unexpected internal error")
     })
-    public com.mjc.school.service.dto.comment.CommentDTOResp create(@RequestBody CommentDTOReq createRequest) {
+    public CommentDTOResp create(@RequestBody CommentDTOReq createRequest) {
         return service.create(createRequest);
     }
 
@@ -76,7 +78,7 @@ public class CCommentController implements CommentController {
             @ApiResponse(code = 404, message = "Comment with given ID was not found"),
             @ApiResponse(code = 500, message = "Unexpected internal error")
     })
-    public com.mjc.school.service.dto.comment.CommentDTOResp update(@PathVariable Long id, @RequestBody CommentDTOReq updateRequest) {
+    public CommentDTOResp update(@PathVariable Long id, @RequestBody CommentDTOReq updateRequest) {
         updateRequest.setId(id);
         return service.update(updateRequest);
     }

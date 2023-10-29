@@ -2,6 +2,8 @@ package com.mjc.school.service.mapper;
 
 
 import com.mjc.school.repository.model.implementation.TagEntity;
+import com.mjc.school.repository.page.Page;
+import com.mjc.school.service.dto.page.PageDTOResp;
 import com.mjc.school.service.dto.tag.TagDTOReq;
 import com.mjc.school.service.dto.tag.TagDTOResp;
 import org.mapstruct.Mapper;
@@ -24,10 +26,9 @@ public abstract class TagDTOMapper {
 
     @Mapping(ignore = true, target = "news")
     public abstract TagEntity reqToEntity(TagDTOReq tagDTOReq);
-    public abstract List<TagEntity> reqsToEntities(List<TagDTOReq> tagReqs);
     public abstract List<TagDTOResp> entitiesToResps(List<TagEntity> tagEntities);
 
-    public List<TagEntity> authorIdToEntity(List<Long> ids) {
+    public List<TagEntity> tagIdToEntity(List<Long> ids) {
         List<TagEntity> tagEntities = new ArrayList<>();
         for (var id : ids) {
             var tagEntity = new TagEntity();
@@ -37,4 +38,5 @@ public abstract class TagDTOMapper {
         return tagEntities;
     }
 
+    public abstract PageDTOResp<TagDTOResp> authorsPageToDto(Page<TagEntity> page);
 }

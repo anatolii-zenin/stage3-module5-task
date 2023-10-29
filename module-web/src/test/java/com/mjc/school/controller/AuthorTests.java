@@ -40,7 +40,7 @@ public class AuthorTests {
                 .when().get(AUTHORS)
                 .then()
                 .statusCode(200)
-                .body("", hasSize(greaterThanOrEqualTo(2)));
+                .body("data", hasSize(greaterThanOrEqualTo(2)));
     }
 
     @Test

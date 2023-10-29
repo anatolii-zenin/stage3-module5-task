@@ -1,11 +1,9 @@
 package com.mjc.school.service;
 
-import java.util.List;
+import com.mjc.school.service.dto.page.PageDTOResp;
 
 public interface PaginationCapableService<T, R, K> {
-    List<R> readAll(int page, int size);
-
-    List<R> readAll();
+    PageDTOResp<R> readAll(int page, int size, String sortBy, String order);
 
     R readById(K id);
 

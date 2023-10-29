@@ -4,6 +4,7 @@ import com.mjc.school.controller.AuthorController;
 import com.mjc.school.service.AuthorService;
 import com.mjc.school.service.dto.author.AuthorDTOReq;
 import com.mjc.school.service.dto.author.AuthorDTOResp;
+import com.mjc.school.service.dto.page.PageDTOResp;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -12,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -27,16 +26,18 @@ public class CAuthorController implements AuthorController {
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "List all authors. Accepts parameters 'page' for page number and " +
             "'size' for the amount of entries returned per page.",
-            response = List.class)
+            response = PageDTOResp.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully retrieved requested data"),
             @ApiResponse(code = 400, message = "Received a malformed request"),
             @ApiResponse(code = 500, message = "Unexpected internal error")
     })
-    public List<AuthorDTOResp> readAll(
+    public PageDTOResp<AuthorDTOResp> readAll(
             @RequestParam(name = "page", required = false, defaultValue = "1") int page,
-            @RequestParam(name = "size", required = false, defaultValue = "10") int size) {
-        return service.readAll(page, size);
+            @RequestParam(name = "size", required = false, defaultValue = "10") int size,
+            @RequestParam(name = "sortBy", required = false, defaultValue = "id") String sortBy,
+            @RequestParam(name = "order", required = false, defaultValue = "asc") String order) {
+        return service.readAll(page, size, sortBy, order);
     }
 
     @Override

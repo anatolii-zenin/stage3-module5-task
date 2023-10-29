@@ -62,7 +62,7 @@ public class TagTests {
                 .when().get(TAGS)
                 .then()
                 .statusCode(200)
-                .body("", hasSize(greaterThanOrEqualTo(2)));
+                .body("data", hasSize(greaterThanOrEqualTo(2)));
     }
 
     @Test

@@ -2,9 +2,11 @@ package com.mjc.school.service.implementation;
 
 import com.mjc.school.repository.NewsRepository;
 import com.mjc.school.repository.model.implementation.NewsEntity;
+import com.mjc.school.repository.page.Page;
 import com.mjc.school.service.NewsService;
 import com.mjc.school.service.dto.news.NewsDTOReq;
 import com.mjc.school.service.dto.news.NewsDTOResp;
+import com.mjc.school.service.dto.page.PageDTOResp;
 import com.mjc.school.service.mapper.NewsDTOMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -16,7 +18,6 @@ import java.util.List;
 
 @Service
 @Scope("singleton")
-@Transactional
 public class NewsServiceImpl
         extends BaseServiceImpl<NewsDTOReq, NewsDTOResp, NewsEntity, NewsRepository>
         implements NewsService {
@@ -41,6 +42,11 @@ public class NewsServiceImpl
     }
 
     @Override
+    protected PageDTOResp<NewsDTOResp> pageToDto(Page<NewsEntity> page) {
+        return mapper.authorsPageToDto(page);
+    }
+
+    @Override
     protected NewsRepository getRepo() {
         return newsRepository;
     }
@@ -51,6 +57,7 @@ public class NewsServiceImpl
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<NewsDTOResp> readByCriteria(NewsDTOReq req) {
         var news = newsRepository.readNewsByCriteria(dtoToEntity(req));
         var newsResps = new ArrayList<NewsDTOResp>();

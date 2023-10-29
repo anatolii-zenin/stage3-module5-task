@@ -42,8 +42,8 @@ public class AuthorServiceTests {
             assertEquals("Entry name is not as expected", authorName, author.getName());
         }
 
-        var allEntries = authorService.readAll();
-        assertEquals("Incorrect number of entries:", testEntries, allEntries.size());
+        var allEntries = authorService.readAll(1, 10, null, null);
+        assertEquals("Incorrect number of entries:", testEntries, allEntries.getData().size());
     }
 
     @Test

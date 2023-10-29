@@ -2,6 +2,7 @@ package com.mjc.school.controller.impl;
 
 import com.mjc.school.controller.TagController;
 import com.mjc.school.service.TagService;
+import com.mjc.school.service.dto.page.PageDTOResp;
 import com.mjc.school.service.dto.tag.TagDTOReq;
 import com.mjc.school.service.dto.tag.TagDTOResp;
 import io.swagger.annotations.Api;
@@ -17,7 +18,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
 @Api(produces = "application/json", tags = "Tags", description = "CRUD operations for tags")
 public class CTagController implements TagController {
     @Autowired
@@ -28,17 +29,18 @@ public class CTagController implements TagController {
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "List all tags. Accepts parameters 'page' for page number and " +
             "'size' for the amount of entries returned per page.",
-            response = List.class)
+            response = PageDTOResp.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully retrieved requested data"),
             @ApiResponse(code = 400, message = "Received a malformed request"),
             @ApiResponse(code = 500, message = "Unexpected internal error")
     })
-    public List<com.mjc.school.service.dto.tag.TagDTOResp> readAll(
+    public PageDTOResp<TagDTOResp> readAll(
             @RequestParam(name = "page", required = false, defaultValue = "1") int page,
-            @RequestParam(name = "size", required = false, defaultValue = "1") int size
-    ) {
-        return service.readAll();
+            @RequestParam(name = "size", required = false, defaultValue = "10") int size,
+            @RequestParam(name = "sortBy", required = false, defaultValue = "id") String sortBy,
+            @RequestParam(name = "order", required = false, defaultValue = "asc") String order) {
+        return service.readAll(page, size, sortBy, order);
     }
 
     @Override
@@ -51,7 +53,7 @@ public class CTagController implements TagController {
             @ApiResponse(code = 404, message = "Tag with given ID was not found"),
             @ApiResponse(code = 500, message = "Unexpected internal error")
     })
-    public com.mjc.school.service.dto.tag.TagDTOResp readById(@PathVariable Long id) {
+    public TagDTOResp readById(@PathVariable Long id) {
         return service.readById(id);
     }
 
@@ -64,7 +66,7 @@ public class CTagController implements TagController {
             @ApiResponse(code = 400, message = "Received a malformed request"),
             @ApiResponse(code = 500, message = "Unexpected internal error")
     })
-    public com.mjc.school.service.dto.tag.TagDTOResp create(@RequestBody TagDTOReq createRequest) {
+    public TagDTOResp create(@RequestBody TagDTOReq createRequest) {
         return service.create(createRequest);
     }
 
@@ -78,7 +80,7 @@ public class CTagController implements TagController {
             @ApiResponse(code = 404, message = "Tag with given ID was not found"),
             @ApiResponse(code = 500, message = "Unexpected internal error")
     })
-    public com.mjc.school.service.dto.tag.TagDTOResp update(@PathVariable Long id, @RequestBody TagDTOReq updateRequest) {
+    public TagDTOResp update(@PathVariable Long id, @RequestBody TagDTOReq updateRequest) {
         updateRequest.setId(id);
         return service.update(updateRequest);
     }

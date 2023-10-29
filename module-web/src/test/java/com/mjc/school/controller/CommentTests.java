@@ -76,7 +76,7 @@ public class CommentTests {
                 .when().get(COMMENTS)
                 .then()
                 .statusCode(200)
-                .body("", hasSize(greaterThanOrEqualTo(2)));
+                .body("data", hasSize(greaterThanOrEqualTo(2)));
     }
 
     @Test

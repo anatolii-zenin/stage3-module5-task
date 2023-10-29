@@ -62,8 +62,8 @@ public class TagServiceTests {
             assertEquals("Tag is not tied to the news entry", newsId, tagEntries.get(0).getId());
         }
 
-        var allEntries = tagService.readAll();
-        assertEquals("Incorrect number of entries:", testEntries, allEntries.size());
+        var allEntries = tagService.readAll(1, 10, null, null);
+        assertEquals("Incorrect number of entries:", testEntries, allEntries.getData().size());
     }
 
     @Test
@@ -90,8 +90,8 @@ public class TagServiceTests {
             assertEquals("Tag is not as expected", tagNameBase + i, tagsFromNews.get(i).getName());
         }
 
-        var allNewsEntries = newsService.readAll();
-        assertEquals("Incorrect number of entries:", 1, allNewsEntries.size());
+        var allNewsEntries = newsService.readAll(1,10, null, null);
+        assertEquals("Incorrect number of entries:", 1, allNewsEntries.getData().size());
     }
 
     @Test

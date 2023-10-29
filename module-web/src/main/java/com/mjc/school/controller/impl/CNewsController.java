@@ -4,6 +4,7 @@ import com.mjc.school.controller.NewsController;
 import com.mjc.school.service.NewsService;
 import com.mjc.school.service.dto.news.NewsDTOReq;
 import com.mjc.school.service.dto.news.NewsDTOResp;
+import com.mjc.school.service.dto.page.PageDTOResp;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -28,17 +29,18 @@ public class CNewsController implements NewsController {
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "List all news. Accepts parameters 'page' for page number and " +
             "'size' for the amount of entries returned per page.",
-            response = List.class)
+            response = PageDTOResp.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully retrieved requested data"),
             @ApiResponse(code = 400, message = "Received a malformed request"),
             @ApiResponse(code = 500, message = "Unexpected internal error")
     })
-    public List<NewsDTOResp> readAll(
+    public PageDTOResp<NewsDTOResp> readAll(
             @RequestParam(name = "page", required = false, defaultValue = "1") int page,
-            @RequestParam(name = "size", required = false, defaultValue = "1") int size
-    ) {
-        return service.readAll();
+            @RequestParam(name = "size", required = false, defaultValue = "10") int size,
+            @RequestParam(name = "sortBy", required = false, defaultValue = "id") String sortBy,
+            @RequestParam(name = "order", required = false, defaultValue = "asc") String order) {
+        return service.readAll(page, size, sortBy, order);
     }
 
     @Override
