@@ -1,5 +1,6 @@
 package com.mjc.school.service;
 
+import com.mjc.school.service.dto.page.PageDTOReq;
 import com.mjc.school.service.exception.NotFoundException;
 import com.mjc.school.service.implementation.AuthorServiceImpl;
 import com.mjc.school.service.implementation.NewsServiceImpl;
@@ -62,7 +63,7 @@ public class TagServiceTests {
             assertEquals("Tag is not tied to the news entry", newsId, tagEntries.get(0).getId());
         }
 
-        var allEntries = tagService.readAll(1, 10, null, null);
+        var allEntries = tagService.readAll(new PageDTOReq(1, 10, "id", "asc"));
         assertEquals("Incorrect number of entries:", testEntries, allEntries.getData().size());
     }
 
@@ -90,7 +91,7 @@ public class TagServiceTests {
             assertEquals("Tag is not as expected", tagNameBase + i, tagsFromNews.get(i).getName());
         }
 
-        var allNewsEntries = newsService.readAll(1,10, null, null);
+        var allNewsEntries = newsService.readAll(new PageDTOReq(1, 10, "id", "asc"));
         assertEquals("Incorrect number of entries:", 1, allNewsEntries.getData().size());
     }
 

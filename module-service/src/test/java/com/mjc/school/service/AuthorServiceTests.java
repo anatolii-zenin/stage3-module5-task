@@ -1,6 +1,7 @@
 package com.mjc.school.service;
 
 import com.mjc.school.service.dto.author.AuthorDTOReq;
+import com.mjc.school.service.dto.page.PageDTOReq;
 import com.mjc.school.service.exception.NotFoundException;
 import com.mjc.school.service.implementation.AuthorServiceImpl;
 import org.junit.jupiter.api.AfterEach;
@@ -42,7 +43,7 @@ public class AuthorServiceTests {
             assertEquals("Entry name is not as expected", authorName, author.getName());
         }
 
-        var allEntries = authorService.readAll(1, 10, null, null);
+        var allEntries = authorService.readAll(new PageDTOReq(1, 10, "id", "asc"));
         assertEquals("Incorrect number of entries:", testEntries, allEntries.getData().size());
     }
 
