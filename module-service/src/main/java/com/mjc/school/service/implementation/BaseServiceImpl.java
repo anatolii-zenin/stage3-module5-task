@@ -3,13 +3,16 @@ package com.mjc.school.service.implementation;
 import com.mjc.school.repository.PaginationCapableRepository;
 import com.mjc.school.repository.model.BaseEntity;
 import com.mjc.school.repository.page.Page;
-import com.mjc.school.repository.page.PageParams;
 import com.mjc.school.service.PaginationCapableService;
 import com.mjc.school.service.dto.Request;
+import com.mjc.school.service.dto.page.PageDTOReq;
 import com.mjc.school.service.dto.page.PageDTOResp;
 import com.mjc.school.service.exception.NotFoundException;
+import com.mjc.school.service.mapper.PageDTOMapper;
 import com.mjc.school.service.validator.annotations.Validate;
+import com.mjc.school.service.validator.annotations.ValidatePage;
 import com.mjc.school.service.validator.annotations.ValidateUpdate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -17,20 +20,17 @@ import java.util.List;
 public abstract class BaseServiceImpl<Req extends Request<Long>, Resp, Entity extends BaseEntity<Long>,
         Repository extends PaginationCapableRepository<Entity, Long>>
         implements PaginationCapableService<Req, Resp, Long> {
+    @Autowired
+    PageDTOMapper pageMapper;
 
     @Override
     @Transactional(readOnly = true)
-    public PageDTOResp<Resp> readAll(int page, int size, String sortBy, String order) {
-        var pageParams = new PageParams();
-        pageParams.setPageNum(page);
-        pageParams.setPageSize(size);
-        pageParams.setSortedBy("id");
-        pageParams.setAscending(true);
-        if (sortBy!= null && !sortBy.isBlank())
-            pageParams.setSortedBy(sortBy);
-        if (sortBy!= null && !order.isBlank())
-            pageParams.setAscending(order.equals("asc"));
-        return pageToDto(getRepo().readAll(pageParams));
+    public PageDTOResp<Resp> readAll(@ValidatePage PageDTOReq req) {
+        var pageParams = pageMapper.pageReqToPageParams(req);
+        var page = getRepo().readAll(pageParams);
+        if (page.getCurrentPage() > page.getTotalPages())
+            throw new NotFoundException("Requested page does not exist. Last page: " + page.getTotalPages());
+        return pageToDto(page);
     }
 
     @Override

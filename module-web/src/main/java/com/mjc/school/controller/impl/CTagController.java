@@ -2,6 +2,7 @@ package com.mjc.school.controller.impl;
 
 import com.mjc.school.controller.TagController;
 import com.mjc.school.service.TagService;
+import com.mjc.school.service.dto.page.PageDTOReq;
 import com.mjc.school.service.dto.page.PageDTOResp;
 import com.mjc.school.service.dto.tag.TagDTOReq;
 import com.mjc.school.service.dto.tag.TagDTOResp;
@@ -27,8 +28,7 @@ public class CTagController implements TagController {
     @Override
     @GetMapping(value = "/tags")
     @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "List all tags. Accepts parameters 'page' for page number and " +
-            "'size' for the amount of entries returned per page.",
+    @ApiOperation(value = "List all tags.",
             response = PageDTOResp.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully retrieved requested data"),
@@ -40,7 +40,8 @@ public class CTagController implements TagController {
             @RequestParam(name = "size", required = false, defaultValue = "10") int size,
             @RequestParam(name = "sortBy", required = false, defaultValue = "id") String sortBy,
             @RequestParam(name = "order", required = false, defaultValue = "asc") String order) {
-        return service.readAll(page, size, sortBy, order);
+        var pageReq = new PageDTOReq(page, size, sortBy, order);
+        return service.readAll(pageReq);
     }
 
     @Override

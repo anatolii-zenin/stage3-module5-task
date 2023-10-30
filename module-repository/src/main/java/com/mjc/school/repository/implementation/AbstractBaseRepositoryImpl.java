@@ -25,12 +25,11 @@ public abstract class AbstractBaseRepositoryImpl<T extends BaseEntity<Long>> imp
         var page = new Page<T>();
         page.setCurrentPage(pageParams.getPageNum());
         page.setSortedBy(pageParams.getSortedBy());
-        page.setAscending(pageParams.isAscending());
 
         var query = getEntityManager().createQuery(
             "SELECT a FROM " + getTableName() + " a " +
                     "ORDER BY a." + pageParams.getSortedBy() +
-                    " " + (pageParams.isAscending()? "ASC" : "DESC"),
+                    " " + pageParams.getOrder(),
                 getEntityClass());
 
         var totalPages = (int) Math.ceil((double) query.getResultList().size() / pageParams.getPageSize());

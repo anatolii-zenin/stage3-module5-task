@@ -1,9 +1,10 @@
 package com.mjc.school.service;
 
+import com.mjc.school.service.dto.page.PageDTOReq;
 import com.mjc.school.service.dto.page.PageDTOResp;
 
 public interface PaginationCapableService<T, R, K> {
-    PageDTOResp<R> readAll(int page, int size, String sortBy, String order);
+    PageDTOResp<R> readAll(PageDTOReq req);
 
     R readById(K id);
 

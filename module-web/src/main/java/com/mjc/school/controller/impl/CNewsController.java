@@ -4,6 +4,7 @@ import com.mjc.school.controller.NewsController;
 import com.mjc.school.service.NewsService;
 import com.mjc.school.service.dto.news.NewsDTOReq;
 import com.mjc.school.service.dto.news.NewsDTOResp;
+import com.mjc.school.service.dto.page.PageDTOReq;
 import com.mjc.school.service.dto.page.PageDTOResp;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -27,8 +28,7 @@ public class CNewsController implements NewsController {
     @Override
     @GetMapping(value = "/")
     @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "List all news. Accepts parameters 'page' for page number and " +
-            "'size' for the amount of entries returned per page.",
+    @ApiOperation(value = "List all news.",
             response = PageDTOResp.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully retrieved requested data"),
@@ -38,9 +38,10 @@ public class CNewsController implements NewsController {
     public PageDTOResp<NewsDTOResp> readAll(
             @RequestParam(name = "page", required = false, defaultValue = "1") int page,
             @RequestParam(name = "size", required = false, defaultValue = "10") int size,
-            @RequestParam(name = "sortBy", required = false, defaultValue = "id") String sortBy,
-            @RequestParam(name = "order", required = false, defaultValue = "asc") String order) {
-        return service.readAll(page, size, sortBy, order);
+            @RequestParam(name = "sortBy", required = false, defaultValue = "createDate") String sortBy,
+            @RequestParam(name = "order", required = false, defaultValue = "desc") String order) {
+        var pageReq = new PageDTOReq(page, size, sortBy, order);
+        return service.readAll(pageReq);
     }
 
     @Override

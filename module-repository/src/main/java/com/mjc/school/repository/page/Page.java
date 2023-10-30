@@ -13,5 +13,4 @@ public class Page<T> {
     private int totalPages;
     private boolean isLastPage;
     private String sortedBy;
-    private boolean ascending;
 }

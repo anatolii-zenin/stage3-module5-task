@@ -4,6 +4,7 @@ import com.mjc.school.controller.CommentController;
 import com.mjc.school.service.CommentService;
 import com.mjc.school.service.dto.comment.CommentDTOReq;
 import com.mjc.school.service.dto.comment.CommentDTOResp;
+import com.mjc.school.service.dto.page.PageDTOReq;
 import com.mjc.school.service.dto.page.PageDTOResp;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -25,8 +26,7 @@ public class CCommentController implements CommentController {
     @Override
     @GetMapping(value = "/comments")
     @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "List all comments. Accepts parameters 'page' for page number and " +
-            "'size' for the amount of entries returned per page.",
+    @ApiOperation(value = "List all comments.",
             response = PageDTOResp.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully retrieved requested data"),
@@ -36,9 +36,10 @@ public class CCommentController implements CommentController {
     public PageDTOResp<CommentDTOResp> readAll(
             @RequestParam(name = "page", required = false, defaultValue = "1") int page,
             @RequestParam(name = "size", required = false, defaultValue = "10") int size,
-            @RequestParam(name = "sortBy", required = false, defaultValue = "id") String sortBy,
-            @RequestParam(name = "order", required = false, defaultValue = "asc") String order) {
-        return service.readAll(page, size, sortBy, order);
+            @RequestParam(name = "sortBy", required = false, defaultValue = "createDate") String sortBy,
+            @RequestParam(name = "order", required = false, defaultValue = "desc") String order) {
+        var pageReq = new PageDTOReq(page, size, sortBy, order);
+        return service.readAll(pageReq);
     }
 
     @Override

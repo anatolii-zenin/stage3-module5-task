@@ -13,5 +13,4 @@ public class NewsDTOResp {
     private String content;
     private LocalDateTime createDate;
     private LocalDateTime lastUpdateDate;
-    private static final String dateFormatPattern = "yyyy-MM-dd'T'HH:mm:ss.SSS";
 }
