@@ -14,8 +14,6 @@ public class AuthorValidator extends BaseValidator<AuthorDTOReq> {
 
     @Override
     public void validate(AuthorDTOReq req, String reqType) {
-        log = new StringBuilder();
-
         validateString(req.getName(), nameLengthFrom, nameLengthTo);
         if (reqType.equals("update")) {
             validateId(req.getId(), authorService);

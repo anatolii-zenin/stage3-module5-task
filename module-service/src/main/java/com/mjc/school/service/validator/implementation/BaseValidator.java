@@ -6,7 +6,6 @@ import com.mjc.school.service.exception.NotFoundException;
 import com.mjc.school.service.validator.Validator;
 
 public abstract class BaseValidator<Req> implements Validator<Req> {
-    protected StringBuilder log;
     protected <Service extends PaginationCapableService<?, ?, Long>> void validateId(Long id, Service service) {
         if (id == null) {
             throw new BadRequestException("null value was provided for an ID");

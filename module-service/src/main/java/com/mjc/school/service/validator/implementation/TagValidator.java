@@ -14,8 +14,6 @@ public class TagValidator extends BaseValidator<TagDTOReq> {
 
     @Override
     public void validate(TagDTOReq req, String reqType) {
-        log = new StringBuilder();
-
         validateString(req.getName(), nameLengthFrom, nameLengthTo);
         if (reqType.equals("update")) {
             validateId(req.getId(), tagService);

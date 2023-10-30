@@ -23,7 +23,6 @@ public class NewsValidator extends BaseValidator<NewsDTOReq> {
 
     @Override
     public void validate(NewsDTOReq req, String reqType) {
-        log = new StringBuilder();
         if (reqType.equals("create"))
             validateCreation(req);
         else if (reqType.equals("update")) {
