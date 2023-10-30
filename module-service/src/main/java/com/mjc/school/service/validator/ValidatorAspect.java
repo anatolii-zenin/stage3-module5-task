@@ -3,8 +3,11 @@ package com.mjc.school.service.validator;
 import com.mjc.school.service.dto.author.AuthorDTOReq;
 import com.mjc.school.service.dto.comment.CommentDTOReq;
 import com.mjc.school.service.dto.news.NewsDTOReq;
+import com.mjc.school.service.dto.page.PageDTOReq;
 import com.mjc.school.service.dto.tag.TagDTOReq;
 import com.mjc.school.service.exception.BadRequestException;
+import com.mjc.school.service.validator.implementation.PageValidator;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
@@ -24,6 +27,8 @@ public class ValidatorAspect {
     Validator<TagDTOReq> tagValidator;
     @Autowired
     Validator<CommentDTOReq> commentValidator;
+    @Autowired
+    PageValidator pageValidator;
 
     @Before("validate() && args(arg)")
     public void validateCreateReq(Object arg) {
@@ -35,12 +40,22 @@ public class ValidatorAspect {
         validateReq(arg, "update");
     }
 
+    @Before("validatePage()")
+    public void validatePageReq(final JoinPoint joinPoint) {
+        Class<?> serviceClass = joinPoint.getTarget().getClass();
+        PageDTOReq req = (PageDTOReq) joinPoint.getArgs()[0];
+        pageValidator.validate(serviceClass, req);
+    }
+
 
     @Pointcut("execution(public * *(.., @com.mjc.school.service.validator.annotations.Validate (*), ..))")
     private void validate() {}
 
     @Pointcut("execution(public * *(.., @com.mjc.school.service.validator.annotations.ValidateUpdate (*), ..))")
     private void validateUpdate() {}
+
+    @Pointcut("execution(public * *(.., @com.mjc.school.service.validator.annotations.ValidatePage (*), ..))")
+    private void validatePage() {}
 
     private void validateReq(Object arg, String reqType) {
         var argClass = arg.getClass();
